@@ -26,4 +26,4 @@ async def help(Mbot, message):
           await message.reply("This is user friendly bot so you can simple send your Instagram reel and post links here:) \n eg: `https://www.instagram.com/reel/CZqWDGODoov/?igshid=MzRlODBiNWFlZA==`\n `post:` `https://www.instagram.com/reel/CuCTtORJbDj/?igshid=MzRlODBiNWFlZA==`")
 @Mbot.on_message(filters.command("donate") & filters.command("Donate") & filters.incoming )
 async def donate(_, message):
-       await message.reply_text(f"Donate 🍪 **UPI**`tusar0925@fam`")
+       await message.reply_text(f"Donate 🍪 - \n𝗨𝗣𝗜 -`tusar0925@fam` \n **𝗕𝗶𝗮𝗻𝗮𝗻𝗰𝗲 𝗜𝗱 - '1018816596'")

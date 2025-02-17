@@ -140,7 +140,7 @@ async def _(Mbot, message):
             fileLink = await ytdl_down(randomdir, link, message.from_user.id, session)
             print("down completely")
             thumnail = await thumb_down(id[0], session)
-            AForCopy = await message.reply_audio(fileLink, caption=f"[{id[3]}](https://youtu.be/{id[0]}) - {id[2]} Thank you for using - @InstaReelsdownbot", title=id[3].replace("_", " "), performer=id[2], thumb=thumnail, duration=id[4])
+            AForCopy = await message.reply_audio(fileLink, caption=f"[{id[3]}](https://youtu.be/{id[0]}) - {id[2]} Thank you for using - @DeadlineReelbot 📢", title=id[3].replace("_", " "), performer=id[2], thumb=thumnail, duration=id[4])
             if DUMP_GROUP:
                 await PForCopy.copy(DUMP_GROUP)
                 await AForCopy.copy(DUMP_GROUP)
@@ -153,5 +153,5 @@ async def _(Mbot, message):
         print(e)
         if LOG_GROUP:
             await Mbot.send_message(LOG_GROUP, f"Youtube {e} {link}")
-            await message.reply(f"400: Sorry, Unable To Find It  try another or report it to @masterolic or support chat @DeadlineTechSupport 💬")
+            await message.reply(f"400: Sorry, Unable To Find It  try another or report it to @DeadlineTechOwner 🏴‍☠️ or support chat @DeadlineTechSupport 💬")
             await Mbot.send_message(LOG_GROUP, traceback.format_exc())

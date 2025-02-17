@@ -31,7 +31,6 @@ async def ytdl_video(path, video_url, user_id, session):
         "prefer_ffmpeg": True,
         "geo_bypass": True,
         "cache-dir": "/tmp/",
-        "proxy": f"socks5://{os.environ.get('FIXIE_SOCKS_HOST')}",
         "cookiefile": 'cookies/cookies.txt',  # Path to the cookies file
     }
     with YoutubeDL(ydl_opts) as ydl:

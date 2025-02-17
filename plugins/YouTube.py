@@ -160,11 +160,11 @@ async def _(Mbot,message):
             await m.delete()
             if LOG_GROUP:
                await Mbot.send_message(LOG_GROUP,f"YouTube Shorts {e} {link}")
-               await message.reply(f"400: Sorry, Unable To Find It  try another or report it  to @masterolic or support chat @spotify_supportbot 🤖  ")
+               await message.reply(f"400: Sorry, Unable To Find It  try another or report it  to @DeadlineTechOwner or support chat @DeadlineTechSupport 💬")
                print(traceback.format_exc())
                await Mbot.send_message(LOG_GROUP, traceback.format_exc())
                
-        return await message.reply("Check out @spotify_downloa_bot(music)  @spotifynewss(Channel) \n Please Support Us By /donate To Maintain This Project")
+        return await message.reply("Check out @DeadlineTech 📢 \n Please Support Us By /donate To Maintain This Project")
     try:
         if "music.youtube.com" in link:
             link=link.replace("music.youtube.com","youtube.com")

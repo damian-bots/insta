@@ -72,8 +72,21 @@ async def ytdl_down(path, video_url, user_id):
     except Exception as e:
         print(f"Error downloading audio: {e}")
         return None
-
-
+ # Thum_down difined       
+async def thumb_down(video_id):
+    try:
+        thumbnail_url = f"https://i.ytimg.com/vi/{video_id}/hqdefault.jpg"
+        response = get(thumbnail_url, stream=True)
+        if response.status_code == 200:
+            thumb_path = f"/tmp/{video_id}.jpg"
+            with open(thumb_path, "wb") as file:
+                for chunk in response.iter_content(1024):
+                    file.write(chunk)
+            return thumb_path
+    except Exception as e:
+        print(f"Error downloading thumbnail: {e}")
+        return None
+        
 # Get IDs for a video or playlist
 async def getIds(video, session):
     ids = []
@@ -137,7 +150,7 @@ async def download_youtube(Mbot, message):
             PForCopy = await message.reply_photo(f"https://i.ytimg.com/vi/{id[0]}/hqdefault.jpg", caption=f"🎧 Title : `{id[3]}`\n🎤 Artist : `{id[2]}`\n💽 Track No : `{id[1]}`\n💽 Total Track : `{videoInPlaylist}`")
             fileLink = await ytdl_down(randomdir, link, message.from_user.id)
             print("Download complete")
-            thumnail = await thumb_down(id[0], session)
+            thumnail = await thumb_down(id[0])  # Now the function exists and works properly
             if fileLink:
                 AForCopy = await message.reply_audio(fileLink, caption=f"[{id[3]}](https://youtu.be/{id[0]}) - {id[2]} Thank you for using - @DeadlineReelbot 📢", title=id[3].replace("_", " "), performer=id[2], thumb=thumnail, duration=id[4])
                 if DUMP_GROUP:

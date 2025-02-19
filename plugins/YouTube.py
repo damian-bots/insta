@@ -2,27 +2,19 @@ import os
 from pyrogram import filters, Client as Mbot
 from random import randint
 from bot import LOG_GROUP, DUMP_GROUP
-from youtube_search import YoutubeSearch
 from yt_dlp import YoutubeDL
-from requests import get, Session
+from requests import Session
 import traceback
 from shutil import rmtree
 
-# Load cookies from file
-def load_cookies(cookie_path):
-    session = Session()
-    if os.path.exists(cookie_path):
-        with open(cookie_path, 'r') as cookie_file:
-            cookies = cookie_file.read()
-            session.cookies.set('cookie', cookies)
-    return session
+COOKIES_PATH = "cookies/cookies.txt"  # Define the cookies path
 
-# YouTube download video function (with cookies)
-async def ytdl_video(path, video_url, user_id):
+# YouTube download video function
+async def ytdl_video(path, video_url):
     print(video_url)
     file = f"{path}/%(title)s.%(ext)s"
     ydl_opts = {
-        "format": "bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best",
+        "format": "bestvideo[ext=mp4]+bestaudio[ext=m4a]/best",
         "noplaylist": True,
         "nocheckcertificate": True,
         "outtmpl": file,
@@ -31,7 +23,7 @@ async def ytdl_video(path, video_url, user_id):
         "prefer_ffmpeg": True,
         "geo_bypass": True,
         "cache-dir": "/tmp/",
-        "cookiesfrombrowser": ("chrome",),  # Use cookies from the browser
+        "cookiefile": COOKIES_PATH,  # Use cookiefile instead of browser cookies
     }
 
     try:
@@ -45,7 +37,7 @@ async def ytdl_video(path, video_url, user_id):
         return None
 
 
-async def ytdl_down(path, video_url, user_id):
+async def ytdl_down(path, video_url):
     print(video_url)
     file = f"{path}/%(title)s"
     ydl_opts = {
@@ -58,7 +50,7 @@ async def ytdl_down(path, video_url, user_id):
         "prefer_ffmpeg": True,
         "geo_bypass": True,
         "cache-dir": "/tmp/",
-        "cookiesfrombrowser": ("chrome",),  # Use cookies from the browser
+        "cookiefile": COOKIES_PATH,  # Use cookiefile instead of browser cookies
         "postprocessors": [
             {"key": "FFmpegExtractAudio", "preferredcodec": "mp3", "preferredquality": "320"}
         ],
@@ -72,25 +64,12 @@ async def ytdl_down(path, video_url, user_id):
     except Exception as e:
         print(f"Error downloading audio: {e}")
         return None
- # Thum_down difined       
-async def thumb_down(video_id):
-    try:
-        thumbnail_url = f"https://i.ytimg.com/vi/{video_id}/hqdefault.jpg"
-        response = get(thumbnail_url, stream=True)
-        if response.status_code == 200:
-            thumb_path = f"/tmp/{video_id}.jpg"
-            with open(thumb_path, "wb") as file:
-                for chunk in response.iter_content(1024):
-                    file.write(chunk)
-            return thumb_path
-    except Exception as e:
-        print(f"Error downloading thumbnail: {e}")
-        return None
-        
+
+
 # Get IDs for a video or playlist
-async def getIds(video, session):
+async def getIds(video):
     ids = []
-    with YoutubeDL({'quiet': True, 'cookiefile': 'cookies/cookies.txt'}) as ydl:
+    with YoutubeDL({'quiet': True, 'cookiefile': COOKIES_PATH}) as ydl:
         info_dict = ydl.extract_info(video, download=False)
         try:
             info_dict = info_dict['entries']
@@ -99,7 +78,7 @@ async def getIds(video, session):
             ids.append([info_dict.get('id'), info_dict.get('playlist_index'), info_dict.get('creator') or info_dict.get('uploader'), info_dict.get('title'), info_dict.get('duration'), info_dict.get('thumbnail')])
     return ids
 
-# Handle incoming YouTube messages
+
 @Mbot.on_message(filters.regex(r'https?://.*youtube[^\s]+') & filters.incoming | filters.regex(r'(https?:\/\/(?:www\.)?youtu\.?be(?:\.com)?\/.*)') & filters.incoming)
 async def download_youtube(Mbot, message):
     try:
@@ -108,17 +87,14 @@ async def download_youtube(Mbot, message):
         pass
     link = message.matches[0].group(0)
 
-    # Load cookies for session
-    session = load_cookies('cookies/cookies.txt')
-
     if "channel" in link or "/c/" in link:
         return await m.edit_text("**Channel** Download Not Available.")
-    
+
     if "shorts" in link:
         try:
             randomdir = "/tmp/" + str(randint(1, 100000000))
             os.mkdir(randomdir)
-            fileLink = await ytdl_video(randomdir, link, message.from_user.id, session)
+            fileLink = await ytdl_video(randomdir, link)
             if fileLink:
                 AForCopy = await message.reply_video(fileLink)
                 if os.path.exists(randomdir):
@@ -127,36 +103,34 @@ async def download_youtube(Mbot, message):
                 if DUMP_GROUP:
                     await AForCopy.copy(DUMP_GROUP)
             else:
-                await message.reply(f"Error: Could not download video.")
+                await message.reply("Error: Could not download video.")
         except Exception as e:
             await m.delete()
             if LOG_GROUP:
                 await Mbot.send_message(LOG_GROUP, f"YouTube Shorts {e} {link}")
-            await message.reply(f"400: Sorry, Unable To Find It. Try another or report it to @DeadlineTechOwner 🏴‍☠️ or support chat @DeadlineTechSupport 💬")
+            await message.reply("400: Sorry, Unable To Find It. Try another or report it to support.")
             print(traceback.format_exc())
             await Mbot.send_message(LOG_GROUP, traceback.format_exc())
-        return await message.reply("Check out @DeadlineTech 📢 \nPlease Support Us By /donate To Maintain This Project")
+        return
 
     try:
         if "music.youtube.com" in link:
             link = link.replace("music.youtube.com", "youtube.com")
-        ids = await getIds(link, session)
+        ids = await getIds(link)
         videoInPlaylist = len(ids)
         randomdir = "/tmp/" + str(randint(1, 100000000))
         os.mkdir(randomdir)
-        
+
         for id in ids:
             link = f"https://youtu.be/{id[0]}"
             PForCopy = await message.reply_photo(f"https://i.ytimg.com/vi/{id[0]}/hqdefault.jpg", caption=f"🎧 Title : `{id[3]}`\n🎤 Artist : `{id[2]}`\n💽 Track No : `{id[1]}`\n💽 Total Track : `{videoInPlaylist}`")
-            fileLink = await ytdl_down(randomdir, link, message.from_user.id)
-            print("Download complete")
-            thumnail = await thumb_down(id[0])  # Now the function exists and works properly
+            fileLink = await ytdl_down(randomdir, link)
             if fileLink:
-                AForCopy = await message.reply_audio(fileLink, caption=f"[{id[3]}](https://youtu.be/{id[0]}) - {id[2]} Thank you for using - @DeadlineReelbot 📢", title=id[3].replace("_", " "), performer=id[2], thumb=thumnail, duration=id[4])
+                AForCopy = await message.reply_audio(fileLink, caption=f"[{id[3]}](https://youtu.be/{id[0]}) - {id[2]} Thank you for using - @YourBot", title=id[3].replace("_", " "), performer=id[2], duration=id[4])
                 if DUMP_GROUP:
                     await PForCopy.copy(DUMP_GROUP)
                     await AForCopy.copy(DUMP_GROUP)
-        
+
         await m.delete()
         if os.path.exists(randomdir):
             rmtree(randomdir)
@@ -165,5 +139,5 @@ async def download_youtube(Mbot, message):
         print(e)
         if LOG_GROUP:
             await Mbot.send_message(LOG_GROUP, f"Youtube {e} {link}")
-            await message.reply(f"400: Sorry, Unable To Find It. Try another or report it to @DeadlineTechOwner 🏴‍☠️ or support chat @DeadlineTechSupport 💬")
+            await message.reply("400: Sorry, Unable To Find It. Try another or report it to support.")
             await Mbot.send_message(LOG_GROUP, traceback.format_exc())

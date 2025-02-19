@@ -1,3 +1,7 @@
+# Netscape HTTP Cookie File
+# http://curl.haxx.se/rfc/cookie_spec.html
+# This is a generated file!  Do not edit.
+
 .youtube.com	TRUE	/	TRUE	1738100701	GPS	1
 .youtube.com	TRUE	/	TRUE	1772658932	PREF	f6=40000000&tz=Asia.Calcutta
 .youtube.com	TRUE	/	FALSE	1772658930	SID	g.a000swiI7scCYYceVJnaSiKf7fAxDyQBmyX4UFzoFscXhxqLOm_qDNw-Tgg35JW9ESPp16prLAACgYKAb4SARcSFQHGX2Misqz4hlx9FNtOt9CyXree5xoVAUF8yKp6c6PzRCmdhPOHBFZK4k1b0076

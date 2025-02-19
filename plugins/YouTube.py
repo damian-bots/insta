@@ -126,7 +126,7 @@ async def download_youtube(Mbot, message):
             PForCopy = await message.reply_photo(f"https://i.ytimg.com/vi/{id[0]}/hqdefault.jpg", caption=f"🎧 Title : `{id[3]}`\n🎤 Artist : `{id[2]}`\n💽 Track No : `{id[1]}`\n💽 Total Track : `{videoInPlaylist}`")
             fileLink = await ytdl_down(randomdir, link)
             if fileLink:
-                AForCopy = await message.reply_audio(fileLink, caption=f"[{id[3]}](https://youtu.be/{id[0]}) - {id[2]} Thank you for using - @YourBot", title=id[3].replace("_", " "), performer=id[2], duration=id[4])
+                AForCopy = await message.reply_audio(fileLink, caption=f"[{id[3]}](https://youtu.be/{id[0]}) - {id[2]} Thank you for using - @DeadlineReelBot", title=id[3].replace("_", " "), performer=id[2], duration=id[4])
                 if DUMP_GROUP:
                     await PForCopy.copy(DUMP_GROUP)
                     await AForCopy.copy(DUMP_GROUP)

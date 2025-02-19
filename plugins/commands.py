@@ -71,6 +71,6 @@ async def help(Mbot, message):
 async def donate(_, message):
     # Sending a reply with inline buttons
     await message.reply_text(
-        "Donate 🍪 - \n𝗨𝗣𝗜 - `tusar0925@fam` \n**𝗕𝗶𝗮𝗻𝗮𝗻𝗰𝗲 𝗜𝗱** - `1018816596`",
+        "Donate 🍪 - \n𝗨𝗣𝗜 - `tusar0925@fam` \n𝗕𝗶𝗮𝗻𝗮𝗻𝗰𝗲 𝗜𝗱 - `1018816596`",
         reply_markup=get_inline()
     )

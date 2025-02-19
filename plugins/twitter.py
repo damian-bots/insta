@@ -79,4 +79,4 @@ async def twitter_handler(Mbot, message):
 
     finally:
         await processing_msg.delete()
-        await message.reply("Check out @spotifyXMusicBot 🎵 and @DeadlineTech 📢\nSupport us with /donate to maintain this project!")
+        await message.reply("Check out @DeadlineTech 📢\nSupport us with /donate to maintain this project!")

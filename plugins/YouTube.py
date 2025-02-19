@@ -18,12 +18,12 @@ def load_cookies(cookie_path):
     return session
 
 # YouTube download video function (with cookies)
-async def ytdl_video(path, video_url, user_id, session):
+async def ytdl_video(path, video_url, user_id):
     print(video_url)
     file = f"{path}/%(title)s.%(ext)s"
     ydl_opts = {
-        'format': 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best',
-        'noplaylist': True,
+        "format": "bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best",
+        "noplaylist": True,
         "nocheckcertificate": True,
         "outtmpl": file,
         "quiet": True,
@@ -31,32 +31,26 @@ async def ytdl_video(path, video_url, user_id, session):
         "prefer_ffmpeg": True,
         "geo_bypass": True,
         "cache-dir": "/tmp/",
-        "cookiefile": 'cookies/cookies.txt',  # Path to the cookies file
+        "cookiesfrombrowser": ("chrome",),  # Use cookies from the browser
     }
-    with YoutubeDL(ydl_opts) as ydl:
-        try:
+
+    try:
+        with YoutubeDL(ydl_opts) as ydl:
             video = ydl.extract_info(video_url, download=True)
             filename = ydl.prepare_filename(video)
             print(filename)
             return filename
-        except Exception as e:
-            print(e)
-            return None
+    except Exception as e:
+        print(f"Error downloading video: {e}")
+        return None
 
-# Thumbnail download function
-async def thumb_down(videoId, session):
-    with open(f"/tmp/{videoId}.jpg", "wb") as file:
-        file.write(session.get(f"https://img.youtube.com/vi/{videoId}/default.jpg").content)
-    return f"/tmp/{videoId}.jpg"
 
-# Download audio function (with cookies)
-async def ytdl_down(path, video_url, user_id, session):
+async def ytdl_down(path, video_url, user_id):
     print(video_url)
-    qa = "mp3"
     file = f"{path}/%(title)s"
     ydl_opts = {
-        'format': "bestaudio",
-        'noplaylist': True,
+        "format": "bestaudio",
+        "noplaylist": True,
         "nocheckcertificate": True,
         "outtmpl": file,
         "quiet": True,
@@ -64,17 +58,21 @@ async def ytdl_down(path, video_url, user_id, session):
         "prefer_ffmpeg": True,
         "geo_bypass": True,
         "cache-dir": "/tmp/",
-        "cookiefile": 'cookies/cookies.txt',  # Path to the cookies file
-        "postprocessors": [{'key': 'FFmpegExtractAudio', 'preferredcodec': qa, 'preferredquality': '320'}],
+        "cookiesfrombrowser": ("chrome",),  # Use cookies from the browser
+        "postprocessors": [
+            {"key": "FFmpegExtractAudio", "preferredcodec": "mp3", "preferredquality": "320"}
+        ],
     }
-    with YoutubeDL(ydl_opts) as ydl:
-        try:
+
+    try:
+        with YoutubeDL(ydl_opts) as ydl:
             video = ydl.extract_info(video_url, download=True)
             filename = ydl.prepare_filename(video)
-            return f"{filename}.{qa}"
-        except Exception as e:
-            print(e)
-            return None
+            return f"{filename}.mp3"
+    except Exception as e:
+        print(f"Error downloading audio: {e}")
+        return None
+
 
 # Get IDs for a video or playlist
 async def getIds(video, session):

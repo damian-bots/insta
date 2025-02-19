@@ -23,6 +23,12 @@ def get_inline_buttons():
     return InlineKeyboardMarkup([
         [InlineKeyboardButton("Updates 📢", url="https://t.me/DeadlineTech")],
         [InlineKeyboardButton("Support 💬", url="https://t.me/DeadlineTechsupport")]
+    ]) 
+
+def get_inline():
+    """Generate inline buttons for updates and support."""
+    return InlineKeyboardMarkup([
+        [InlineKeyboardButton("Donate Stars ⭐", url="https://t.me/+akVZj1IYX_NmZjg1")]
     ])
 
 @Mbot.on_message(filters.incoming & filters.private, group=-1)
@@ -65,6 +71,6 @@ async def help(Mbot, message):
 async def donate(_, message):
     # Sending a reply with inline buttons
     await message.reply_text(
-        "Donate 🍪 - \n𝗨𝗣𝗜 - `tusar0925@fam` \n**𝗕𝗶𝗮𝗻𝗮𝗻𝗰𝗲 𝗜𝗱** - '1018816596'",
-        reply_markup=get_inline_buttons()
+        "Donate 🍪 - \n𝗨𝗣𝗜 - `tusar0925@fam` \n**𝗕𝗶𝗮𝗻𝗮𝗻𝗰𝗲 𝗜𝗱** - `1018816596`",
+        reply_markup=get_inline()
     )

@@ -65,7 +65,7 @@ async def twitter_handler(Mbot, message):
             dump_file = await message.reply_video(video_url, caption="Thank you for using - @DeadlineReelbot")
         except Exception as e:
             print(f"Error sending video directly: {e}")
-            await message.reply_text(f"Here is the media link:\n{video_url}")
+            await message.reply_text(f"Click to download the media 📢:\n{video_url}")
 
         # Store media in dump group
         if DUMP_GROUP and "dump_file" in locals():
